@@ -4,7 +4,7 @@ import './pages/assignment/assignment_3.dart';
 import './pages/assignment/assignment_4.dart';
 
 void main() {
-  const arg = String.fromEnvironment("assignment");
+  const arg = String.fromEnvironment("assignment"); // run: flutter run --dart-define="assignment=N"
   Widget app = const Text("no assignment", textDirection: TextDirection.ltr);
   if (arg == "2") {
     app = const Assignment2();
