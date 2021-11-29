@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'model/assignment_model_5.dart';
 
 class SettingScreen extends StatelessWidget {
-  const SettingScreen({Key? key}) : super(key: key);
+  final bool currentFixedOpt;
+  const SettingScreen({Key? key, required this.currentFixedOpt}) : super(key: key);
 
   Widget _buildButton(BuildContext context, String name, bool option) {
     return Container(
@@ -20,12 +21,14 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String optString = currentFixedOpt ? "Fixed" : "Dynamic";
     return Scaffold(
         appBar: AppBar(title: const Text("Setting")),
         body: Container(
             padding: const EdgeInsets.only(top: 200),
             child: Column(
               children: [
+                Center(child: Text("Current Option: $optString")),
                 Center(child: _buildButton(context, "Fix Second Screen", true)),
                 Center(
                     child:

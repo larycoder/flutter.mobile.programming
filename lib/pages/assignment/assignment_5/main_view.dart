@@ -11,7 +11,7 @@ class Assignment5 extends StatelessWidget {
     return MaterialApp(initialRoute: '/', routes: {
       '/': (context) => const MainScreen(),
       '/second': (context) => const SecondScreen(),
-      '/setting': (context) => const SettingScreen(),
+      '/setting': (context) => const SettingScreen(currentFixedOpt: false),
       '/gallery': (context) => const GalleryScreen(),
     });
   }
@@ -51,6 +51,10 @@ class _MainScreenState extends State<MainScreen> {
         });
   }
 
+  Widget _buildButtonWithOnPress(String name, void Function() onPressed) {
+    return TextButton(child: Text(name), onPressed: onPressed);
+  }
+
   @override
   Widget build(BuildContext context) {
     var titleController = TextEditingController();
@@ -77,8 +81,15 @@ class _MainScreenState extends State<MainScreen> {
             return ScreenArguments(
                 _collectText(titleController), _collectText(messageController));
           }, (opt) {}),
-          _buildButton(context, 'setting', '/setting', null, (opt) {
-            fixSecondScreen = (opt.toString().toLowerCase() == "true");
+          _buildButtonWithOnPress('setting', () {
+            Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SettingScreen(currentFixedOpt: fixSecondScreen)))
+                .then((opt) {
+              fixSecondScreen = opt;
+            });
           }),
           _buildTextForm("Title", titleController),
           _buildTextForm("Message", messageController)
