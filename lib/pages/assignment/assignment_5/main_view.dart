@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './model/assignment_model_5.dart';
 import './basic_view.dart';
+import './gallery_view.dart';
 
 class Assignment5 extends StatelessWidget {
   const Assignment5({Key? key}) : super(key: key);
@@ -11,6 +12,7 @@ class Assignment5 extends StatelessWidget {
       '/': (context) => const MainScreen(),
       '/second': (context) => const SecondScreen(),
       '/setting': (context) => const SettingScreen(),
+      '/gallery': (context) => const GalleryScreen(),
     });
   }
 }
@@ -31,6 +33,19 @@ class MainScreen extends StatelessWidget {
     return text;
   }
 
+  Widget _buildButton(
+      BuildContext context, String name, String routeName, Function? func) {
+    return TextButton(
+        child: Text(name),
+        onPressed: () {
+          if (func == null) {
+            Navigator.pushNamed(context, routeName);
+          } else {
+            Navigator.pushNamed(context, routeName, arguments: func());
+          }
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     var titleController = TextEditingController();
@@ -48,11 +63,11 @@ class MainScreen extends StatelessWidget {
                     arguments: ScreenArguments(_collectText(titleController),
                         _collectText(messageController)));
               }),
-          TextButton(
-              child: const Text("setting"),
-              onPressed: () {
-                Navigator.pushNamed(context, '/setting');
-              }),
+          _buildButton(context, 'gallery', '/gallery', () {
+            return ScreenArguments(
+                _collectText(titleController), _collectText(messageController));
+          }),
+          _buildButton(context, 'setting', '/setting', null),
           _buildTextForm("Title", titleController),
           _buildTextForm("Message", messageController)
         ])));
