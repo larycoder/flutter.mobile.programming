@@ -17,8 +17,15 @@ class Assignment5 extends StatelessWidget {
   }
 }
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  bool fixSecondScreen = false;
 
   Widget _buildTextForm(String name, TextEditingController controller) {
     return TextField(
@@ -33,16 +40,14 @@ class MainScreen extends StatelessWidget {
     return text;
   }
 
-  Widget _buildButton(
-      BuildContext context, String name, String routeName, Function? func) {
+  Widget _buildButton(BuildContext context, String name, String routeName,
+      Function? func, void Function(Object? opt) callback) {
     return TextButton(
         child: Text(name),
         onPressed: () {
-          if (func == null) {
-            Navigator.pushNamed(context, routeName);
-          } else {
-            Navigator.pushNamed(context, routeName, arguments: func());
-          }
+          func ??= (() => ScreenArguments("", ""));
+          Navigator.pushNamed(context, routeName, arguments: func!())
+              .then(callback);
         });
   }
 
@@ -59,15 +64,22 @@ class MainScreen extends StatelessWidget {
                   tag: 'imageHero',
                   child: Image.network('https://picsum.photos/250?image=9')),
               onTap: () {
-                Navigator.pushNamed(context, '/second',
-                    arguments: ScreenArguments(_collectText(titleController),
-                        _collectText(messageController)));
+                final ScreenArguments arg;
+                if (fixSecondScreen) {
+                  arg = ScreenArguments("", "");
+                } else {
+                  arg = ScreenArguments(_collectText(titleController),
+                      _collectText(messageController));
+                }
+                Navigator.pushNamed(context, '/second', arguments: arg);
               }),
           _buildButton(context, 'gallery', '/gallery', () {
             return ScreenArguments(
                 _collectText(titleController), _collectText(messageController));
+          }, (opt) {}),
+          _buildButton(context, 'setting', '/setting', null, (opt) {
+            fixSecondScreen = (opt.toString().toLowerCase() == "true");
           }),
-          _buildButton(context, 'setting', '/setting', null),
           _buildTextForm("Title", titleController),
           _buildTextForm("Message", messageController)
         ])));
